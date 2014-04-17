@@ -94,6 +94,13 @@ class rcube_ldap_password
             return PASSWORD_CONNECT_ERROR;
         }
 
+        //Disable Samba for Posix Only user in a mixed environment
+        $sambaTest  = $userEntry->getValue('sambaAcctFlags');
+        if (Net_LDAP2::isError($sambaTest)) {
+            $smbpwattr = false;
+            $smblchattr = false;
+        }
+        
         if (!$userEntry->replace(array($pwattr => $crypted_pass), $force)) {
             return PASSWORD_CONNECT_ERROR;
         }
